@@ -2,12 +2,9 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
 const form = d3.select('body').append('form');
 
-const heightBins = ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100-109', '110-119', '120-129', '130-139', '140-149', '150-159', '160-169', '170-179','180-189','190-199','200-209'];
-const ageBins = ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100+'];
-
-const weightBins = ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100+'];
-
-
+const heightBins = ['All', '0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100-109', '110-119', '120-129', '130-139', '140-149', '150-159', '160-169', '170-179','180-189','190-199','200-209'];
+const ageBins = ['All', '0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100+'];
+const weightBins = ['All', '0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100+'];
 
 form.append('label').text('Height: ');
 form.append('select').attr('id', 'height').attr('name', 'height')
@@ -39,7 +36,7 @@ form.append('br');
 form.append('label').text('Sex: ');
 form.append('select').attr('id', 'sex').attr('name', 'sex')
     .selectAll('option')
-    .data(['M', 'F'])
+    .data(['All', 'M', 'F'])
     .enter()
     .append('option')
     .text(d => d);
@@ -70,17 +67,17 @@ function updateDashboard() {
 
     console.log('Selected Filters:', { heightRange, weightRange, ageRange, sex });
 
-    const [heightMin, heightMax] = heightRange === '100+' ? [100, Infinity] : heightRange.split('-').map(parseFloat);
-    const [weightMin, weightMax] = weightRange === '200+' ? [200, Infinity] : weightRange.split('-').map(parseFloat);
-    const [ageMin, ageMax] = ageRange === '100+' ? [100, Infinity] : ageRange.split('-').map(parseFloat);
+    const [heightMin, heightMax] = heightRange === 'All' ? [null, null] : heightRange === '100+' ? [100, Infinity] : heightRange.split('-').map(parseFloat);
+    const [weightMin, weightMax] = weightRange === 'All' ? [null, null] : weightRange === '200+' ? [200, Infinity] : weightRange.split('-').map(parseFloat);
+    const [ageMin, ageMax] = ageRange === 'All' ? [null, null] : ageRange === '100+' ? [100, Infinity] : ageRange.split('-').map(parseFloat);
 
     console.log('Parsed Ranges:', { heightMin, heightMax, weightMin, weightMax, ageMin, ageMax });
 
     const filteredData = window.data.filter(d => {
-        const heightMatch = !heightRange || (d.height >= heightMin && d.height <= heightMax);
-        const weightMatch = !weightRange || (d.weight >= weightMin && d.weight <= weightMax);
-        const ageMatch = !ageRange || (d.age >= ageMin && d.age <= ageMax);
-        const sexMatch = !sex || d.sex === sex;
+        const heightMatch = heightRange === 'All' || (d.height >= heightMin && d.height <= heightMax);
+        const weightMatch = weightRange === 'All' || (d.weight >= weightMin && d.weight <= weightMax);
+        const ageMatch = ageRange === 'All' || (d.age >= ageMin && d.age <= ageMax);
+        const sexMatch = sex === 'All' || d.sex === sex;
 
         return heightMatch && weightMatch && ageMatch && sexMatch;
     });
