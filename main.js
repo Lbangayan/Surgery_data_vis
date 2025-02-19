@@ -41,10 +41,16 @@ d3.json('health_data').then(data => {
         console.error('No data loaded or data is empty');
         return;
     }
+
+    data.forEach(d => {
+        d.dis = d.dis / 86400;  // 1 day = 86400 seconds
+    });
+
     window.data = data;
 }).catch(error => {
     console.error('Error loading the data', error);
 });
+
 
 function updateDashboard() {
     // Remove old charts
@@ -80,7 +86,7 @@ function updateDashboard() {
     const chartsContainer = d3.select("body").append("div").attr("id", "charts-container").attr("class", "chart-container");
 
     // Compute statistics
-    const meanDis = d3.mean(window.data, d => d.dis / 86400);
+    const meanDis = d3.mean(window.data, d => d.dis);
     const totalPatients = filteredData.length;
     const totalDeaths = filteredData.filter(d => d.death_inhosp === 1).length;
     const survivalRate = ((totalPatients - totalDeaths) / totalPatients) * 100;
@@ -100,7 +106,7 @@ function createHistogram(parentDiv, data, yLabel, key, meanValue, meanColor) {
     const width = 600, height = 400, margin = { top: 20, right: 20, bottom: 40, left: 60 };
 
     // Convert `dis` values to days
-    data.forEach(d => d[key] = d[key] / 86400); // Convert from seconds to days
+    data.forEach(d => d[key] = d[key]); // Convert from seconds to days
 
     // Create an SVG element inside the container
     const svg = parentDiv.append("svg").attr("class", "histogram").attr("width", width).attr("height", height);
