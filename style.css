@@ -1,5 +1,6 @@
 body {
     font-family: 'Poppins', sans-serif;
+    font: 100%/1.5 system-ui;
     background-color: #f4f4f4;
     margin: 20px;
     padding: 0;

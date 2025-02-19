@@ -89,6 +89,7 @@ function updateDashboard() {
     createMortalitySummary(chartsContainer, survivalRate, mortalityRate);
 
     createHistogram(chartsContainer, filteredData, "Hospital Stay (Days)", "dis", meanDis, "red");
+    console.log(meanDis);
 
 
     console.log("Dashboard updated");
@@ -163,7 +164,7 @@ function createHistogram(parentDiv, data, yLabel, key, meanValue, meanColor) {
 
     // ✅ Mean line (converted to days)
     if (!isNaN(meanValue)) {
-        const meanInDays = meanValue / 86400; // Convert from seconds to days
+        const meanInDays = meanValue; // Convert from seconds to days
 
         svg.append("line")
             .attr("x1", xScale(meanInDays))
